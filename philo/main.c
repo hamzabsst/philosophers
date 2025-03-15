@@ -6,13 +6,16 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 02:37:59 by hbousset          #+#    #+#             */
-/*   Updated: 2025/03/08 02:44:43 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/03/15 03:37:25 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int main()
+int	main(int ac, char **av)
 {
-	write(1, "hamza", 5);
+	t_philo	*philo;
+
+	if (parsing(ac, av))
+		return (1);
 }
