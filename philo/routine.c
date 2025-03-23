@@ -1,23 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/08 02:37:59 by hbousset          #+#    #+#             */
-/*   Updated: 2025/03/23 19:36:48 by hbousset         ###   ########.fr       */
+/*   Created: 2025/03/22 21:07:13 by hbousset          #+#    #+#             */
+/*   Updated: 2025/03/23 19:41:05 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	main(int ac, char **av)
+long	get_time(void)
 {
-	t_data	data;
-	t_philo	*philo;
+	struct timeval	tv;
 
-	if (parsing(ac, av, &data, &philo))
-		return (1);
-	return (0);
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+}
+
+void	*routine(void *arg)
+{
+	t_philo *philo = (t_philo *)arg;
+
+	printf("Philosopher %d is thinking\n", philo->id);
+	return (NULL);
 }

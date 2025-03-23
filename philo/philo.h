@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 12:41:26 by hbousset          #+#    #+#             */
-/*   Updated: 2025/03/15 21:36:08 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/03/23 19:45:35 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <sys/time.h>
-# include <sys/wait.h>
-# include <signal.h>
 # include <pthread.h>
-# include <semaphore.h>
 # include <limits.h>
 
 typedef struct s_data
@@ -44,6 +41,8 @@ typedef struct s_philo
 	t_data		*data;
 }	t_philo;
 
-int	parsing(int ac, char **av, t_data *data);
+int		parsing(int ac, char **av, t_data *data, t_philo **philo);
+void	*routine(void *arg);
+long	get_time(void);
 
 #endif
