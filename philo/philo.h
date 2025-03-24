@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 12:41:26 by hbousset          #+#    #+#             */
-/*   Updated: 2025/03/23 19:45:35 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/03/24 02:11:50 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,14 @@
 # include <pthread.h>
 # include <limits.h>
 
+# define DIED  "is dead 💀"
+# define EAT  "is eating  🍔"
+# define SLP  "is sleeping 😴"
+# define R  "has taken a right fork 🍴"
+# define L  "has taken a left fork 🍴"
+# define THNK  "is thinking 🤔"
+# define FINISH  "simulation is finished"
+
 typedef struct s_data
 {
 	int				philos;
@@ -27,16 +35,17 @@ typedef struct s_data
 	int				t_eat;
 	int				t_sleep;
 	int				n_eat;
-	long long		start_time;
+	long 			start_time;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	write_lock;
+	int				end;
 }	t_data;
 
 typedef struct s_philo
 {
 	int			id;
 	int			meals_eaten;
-	long long	last_meal;
+	long		last_meal;
 	pthread_t	thread;
 	t_data		*data;
 }	t_philo;
@@ -44,5 +53,6 @@ typedef struct s_philo
 int		parsing(int ac, char **av, t_data *data, t_philo **philo);
 void	*routine(void *arg);
 long	get_time(void);
+void	*monitor_death(void *arg);
 
 #endif

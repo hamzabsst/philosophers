@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 01:14:37 by hbousset          #+#    #+#             */
-/*   Updated: 2025/03/23 19:45:58 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/03/24 02:11:40 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ static int	init_variables(int ac, char **av, t_data *data)
 	else
 		data->n_eat = -1;
 	data->start_time = get_time();
+	data->end = 0;
 	return (0);
 }
 
@@ -97,8 +98,8 @@ int	init_philos(t_data *data, t_philo **philos)
 	{
 		(*philos)[i].id = i;
 		(*philos)[i].meals_eaten = 0;
-		(*philos)[i].last_meal = 0;
 		(*philos)[i].data = data;
+		(*philos)[i].last_meal = data->start_time;
 		if (pthread_create(&(*philos)[i].thread, NULL, routine, &(*philos)[i]))
 			return (printf("Error: thread creation failed\n"), 1);
 		i++;
@@ -110,7 +111,11 @@ int	parsing(int ac, char **av, t_data *data, t_philo **philo)
 {
 	if (ac != 5 && ac != 6)
 		return (printf("Error: Invalid number of arguments!\n"), 1);
-	if (init_variables(ac, av, data) || init_philos(data, philo) || init_forks(data))
+	if (init_variables(ac, av, data))
+		return (1);
+	if (init_forks(data))
+		return (1);
+	if (init_philos(data, philo))
 		return (1);
 	return (0);
 }
