@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 01:14:37 by hbousset          #+#    #+#             */
-/*   Updated: 2025/03/24 02:11:40 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/03/26 02:58:33 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static int	init_variables(int ac, char **av, t_data *data)
 
 	if (ft_atol(av[1], &temp) || temp <= 0)
 		return (printf("Error: Invalid number of philosophers\n"), 1);
-	data->philos = temp;
+	data->philo = temp;
 	if (ft_atol(av[2], &temp) || temp <= 0)
 		return (printf("Error: Invalid time_to_die\n"), 1);
 	data->t_die = temp;
@@ -62,8 +62,9 @@ static int	init_variables(int ac, char **av, t_data *data)
 	}
 	else
 		data->n_eat = -1;
-	data->start_time = get_time();
+	data->t_start = live_time(0);
 	data->end = 0;
+	pthread_mutex_init(&data->end_lock, NULL);
 	return (0);
 }
 
@@ -71,11 +72,11 @@ int	init_forks(t_data *data)
 {
 	int	i;
 
-	data->forks = malloc(sizeof(pthread_mutex_t) * data->philos);
+	data->forks = malloc(sizeof(pthread_mutex_t) * data->philo);
 	if (!data->forks)
 		return (printf("Error: malloc failed\n"), 1);
 	i = 0;
-	while (i < data->philos)
+	while (i < data->philo)
 	{
 		if (pthread_mutex_init(&data->forks[i], NULL))
 			return (printf("Error: mutex init failed\n"), 1);
@@ -86,36 +87,58 @@ int	init_forks(t_data *data)
 	return (0);
 }
 
-int	init_philos(t_data *data, t_philo **philos)
+int	create_thread(t_data *data, t_philo *philo)
 {
-	int	i;
+	pthread_t	monitor;
+	int			i;
 
-	*philos = malloc(sizeof(t_philo) * data->philos);
-	if (!*philos)
-		return (printf("Error: malloc failed\n"), 1);
+	if (pthread_create(&monitor, NULL, monitor_death, philo))
+		return (printf("Error: monitor thread creation failed\n"), 1);
 	i = 0;
-	while (i < data->philos)
+	while (i < data->philo)
 	{
-		(*philos)[i].id = i;
-		(*philos)[i].meals_eaten = 0;
-		(*philos)[i].data = data;
-		(*philos)[i].last_meal = data->start_time;
-		if (pthread_create(&(*philos)[i].thread, NULL, routine, &(*philos)[i]))
-			return (printf("Error: thread creation failed\n"), 1);
+		pthread_join(philo[i].thread, NULL);
 		i++;
 	}
+	pthread_join(monitor, NULL);
+	i = 0;
+	while (i < data->philo)
+	{
+		pthread_mutex_destroy(&data->forks[i]);
+		i++;
+	}
+	pthread_mutex_destroy(&data->write_lock);
+	free(data->forks);
+	free(philo);
 	return (0);
 }
 
-int	parsing(int ac, char **av, t_data *data, t_philo **philo)
+int	parse_and_init(int ac, char **av, t_data *data, t_philo *philo)
 {
+	int	i;
+
 	if (ac != 5 && ac != 6)
 		return (printf("Error: Invalid number of arguments!\n"), 1);
 	if (init_variables(ac, av, data))
 		return (1);
 	if (init_forks(data))
 		return (1);
-	if (init_philos(data, philo))
+	philo = malloc(sizeof(t_philo) * data->philo);
+	if (!philo)
+		return (printf("Error: malloc failed\n"), 1);
+	i = 0;
+	while (i < data->philo)
+	{
+		philo[i].id = i;
+		philo[i].meals_eaten = 0;
+		philo[i].data = data;
+		philo[i].last_meal = data->t_start;
+		pthread_mutex_init(&philo[i].meal_lock, NULL);
+		if (pthread_create(&philo[i].thread, NULL, routine, &philo[i]))
+			return (printf("Error: thread creation failed\n"), 1);
+		i++;
+	}
+	if (create_thread(data, philo))
 		return (1);
 	return (0);
 }
