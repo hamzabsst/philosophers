@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 12:41:26 by hbousset          #+#    #+#             */
-/*   Updated: 2025/03/26 03:06:02 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/03/26 03:12:00 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,9 @@ typedef struct s_data
 	int				t_sleep;
 	int				n_eat;
 	long 			t_start;
+	int				end;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	write_lock;
-	pthread_mutex_t	end_lock;
-	int				end;
 }	t_data;
 
 typedef struct s_philo
@@ -46,7 +45,6 @@ typedef struct s_philo
 	int			id;
 	int			meals_eaten;
 	long		last_meal;
-	pthread_mutex_t	meal_lock;
 	pthread_t	thread;
 	t_data		*data;
 }	t_philo;

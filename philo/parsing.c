@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 01:14:37 by hbousset          #+#    #+#             */
-/*   Updated: 2025/03/26 02:58:33 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/03/26 03:12:36 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ static int	init_variables(int ac, char **av, t_data *data)
 		data->n_eat = -1;
 	data->t_start = live_time(0);
 	data->end = 0;
-	pthread_mutex_init(&data->end_lock, NULL);
 	return (0);
 }
 
@@ -133,7 +132,6 @@ int	parse_and_init(int ac, char **av, t_data *data, t_philo *philo)
 		philo[i].meals_eaten = 0;
 		philo[i].data = data;
 		philo[i].last_meal = data->t_start;
-		pthread_mutex_init(&philo[i].meal_lock, NULL);
 		if (pthread_create(&philo[i].thread, NULL, routine, &philo[i]))
 			return (printf("Error: thread creation failed\n"), 1);
 		i++;
