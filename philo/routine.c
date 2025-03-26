@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 21:07:13 by hbousset          #+#    #+#             */
-/*   Updated: 2025/03/26 03:50:48 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/03/26 18:21:56 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,31 +54,30 @@ void	smart_sleep(long duration, t_data *data)
 void	philo_eating(t_philo *philo)
 {
 	t_data	*data;
-	int		first_fork;
-	int		second_fork;
+	int		right_fork;
+	int		left_fork;
 	int		temp;
 
 	data = philo->data;
-	first_fork = philo->id;
-	second_fork = (philo->id + 1) % data->philo;
-	if (first_fork > second_fork)
+	right_fork = philo->id;
+	left_fork = (philo->id + 1) % data->philo;
+	if (right_fork > left_fork)
 	{
-		temp = first_fork;
-		first_fork = second_fork;
-		second_fork = temp;
+		temp = right_fork;
+		right_fork = left_fork;
+		left_fork = temp;
 	}
-	pthread_mutex_lock(&data->forks[first_fork]);
+	pthread_mutex_lock(&data->forks[right_fork]);
 	print_msg(philo, R_FORK);
-	pthread_mutex_lock(&data->forks[second_fork]);
-	print_msg(philo, L_FORK);
-	print_msg(philo, EAT);
+	pthread_mutex_lock(&data->forks[left_fork]);
+	(print_msg(philo, L_FORK), print_msg(philo, EAT));
 	pthread_mutex_lock(&philo->meal_mutex);
 	philo->last_meal = live_time(0);
 	philo->meals_eaten++;
 	pthread_mutex_unlock(&philo->meal_mutex);
 	smart_sleep(data->t_eat, data);
-	pthread_mutex_unlock(&data->forks[second_fork]);
-	pthread_mutex_unlock(&data->forks[first_fork]);
+	pthread_mutex_unlock(&data->forks[left_fork]);
+	pthread_mutex_unlock(&data->forks[right_fork]);
 }
 
 void	*routine(void *arg)
