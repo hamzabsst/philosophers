@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 12:41:26 by hbousset          #+#    #+#             */
-/*   Updated: 2025/03/26 03:12:00 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/03/26 03:52:24 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,12 @@
 # include <limits.h>
 
 # define DEAD  "is dead 💀\n"
-# define EAT  "is eating  🍔\n"
+# define EAT  "is eating 🍽️\n"
 # define SLEEP  "is sleeping 😴\n"
-# define FORK  "has taken a fork 🍴\n"
+# define R_FORK  "has taken the right fork 🍴\n"
+# define L_FORK  "has taken the left fork 🍴\n"
 # define THINK  "is thinking 🤔\n"
-# define FINISH  "simulation is finished\n"
+# define FINISH  "simulation is finished ✅\n"
 
 typedef struct s_data
 {
@@ -38,6 +39,7 @@ typedef struct s_data
 	int				end;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	write_lock;
+	pthread_mutex_t	end_mutex;
 }	t_data;
 
 typedef struct s_philo
@@ -45,6 +47,7 @@ typedef struct s_philo
 	int			id;
 	int			meals_eaten;
 	long		last_meal;
+	pthread_mutex_t	meal_mutex;
 	pthread_t	thread;
 	t_data		*data;
 }	t_philo;
