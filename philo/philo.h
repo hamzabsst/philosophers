@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 12:41:26 by hbousset          #+#    #+#             */
-/*   Updated: 2025/03/26 18:18:25 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/03/27 02:57:22 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ typedef struct s_philo
 	int				id;
 	int				meals_eaten;
 	long			last_meal;
+	int				in_cycle;
 	pthread_mutex_t	meal_mutex;
 	pthread_t		thread;
 	t_data			*data;
