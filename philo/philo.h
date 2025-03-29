@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 12:41:26 by hbousset          #+#    #+#             */
-/*   Updated: 2025/03/27 02:57:22 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/03/29 02:02:02 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,14 +47,15 @@ typedef struct s_philo
 	int				id;
 	int				meals_eaten;
 	long			last_meal;
-	int				in_cycle;
 	pthread_mutex_t	meal_mutex;
 	pthread_t		thread;
 	t_data			*data;
 }	t_philo;
 
-int		parse_and_init(int ac, char **av, t_data *data, t_philo *philo);
+int		parsing(int ac, char **av, t_data *data);
 long	live_time(long start);
+int		create_thread(t_philo *philo);
+void	*one_philo(void *arg);
 void	*routine(void *arg);
 void	*monitor_death(void *arg);
 

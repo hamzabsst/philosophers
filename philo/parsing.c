@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 01:14:37 by hbousset          #+#    #+#             */
-/*   Updated: 2025/03/26 03:12:36 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/03/29 02:01:57 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,76 +67,24 @@ static int	init_variables(int ac, char **av, t_data *data)
 	return (0);
 }
 
-int	init_forks(t_data *data)
-{
-	int	i;
-
-	data->forks = malloc(sizeof(pthread_mutex_t) * data->philo);
-	if (!data->forks)
-		return (printf("Error: malloc failed\n"), 1);
-	i = 0;
-	while (i < data->philo)
-	{
-		if (pthread_mutex_init(&data->forks[i], NULL))
-			return (printf("Error: mutex init failed\n"), 1);
-		i++;
-	}
-	if (pthread_mutex_init(&data->write_lock, NULL))
-		return (printf("Error: mutex init failed\n"), 1);
-	return (0);
-}
-
-int	create_thread(t_data *data, t_philo *philo)
+int	create_thread(t_philo *philo)
 {
 	pthread_t	monitor;
-	int			i;
 
-	if (pthread_create(&monitor, NULL, monitor_death, philo))
-		return (printf("Error: monitor thread creation failed\n"), 1);
-	i = 0;
-	while (i < data->philo)
-	{
-		pthread_join(philo[i].thread, NULL);
-		i++;
-	}
+	if (pthread_create(&monitor, NULL, monitor_death, philo) != 0)
+		return (1);
 	pthread_join(monitor, NULL);
-	i = 0;
-	while (i < data->philo)
-	{
-		pthread_mutex_destroy(&data->forks[i]);
-		i++;
-	}
-	pthread_mutex_destroy(&data->write_lock);
-	free(data->forks);
-	free(philo);
 	return (0);
 }
 
-int	parse_and_init(int ac, char **av, t_data *data, t_philo *philo)
+int	parsing(int ac, char **av, t_data *data)
 {
 	int	i;
 
+	i = 0;
 	if (ac != 5 && ac != 6)
 		return (printf("Error: Invalid number of arguments!\n"), 1);
 	if (init_variables(ac, av, data))
-		return (1);
-	if (init_forks(data))
-		return (1);
-	philo = malloc(sizeof(t_philo) * data->philo);
-	if (!philo)
-		return (printf("Error: malloc failed\n"), 1);
-	i = 0;
-	while (i < data->philo)
-	{
-		philo[i].id = i;
-		philo[i].meals_eaten = 0;
-		philo[i].data = data;
-		philo[i].last_meal = data->t_start;
-		if (pthread_create(&philo[i].thread, NULL, routine, &philo[i]))
-			return (printf("Error: thread creation failed\n"), 1);
-		i++;
-	}
-	if (create_thread(data, philo))
 		return (1);
 	return (0);
 }
