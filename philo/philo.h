@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 12:41:26 by hbousset          #+#    #+#             */
-/*   Updated: 2025/03/29 02:02:02 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/03/30 08:10:42 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,26 @@ typedef struct s_philo
 	t_data			*data;
 }	t_philo;
 
-int		parsing(int ac, char **av, t_data *data);
+typedef struct s_monitor
+{
+	t_philo	*philos;
+	t_data	*data;
+	long	current_t;
+	long	t_since_meal;
+	long	min_t_remain;
+	int		i;
+	int		all_done;
+}	t_monitor;
+
+int		init_data(t_data *data, int ac, char **av);
+int		create_philo(t_data *data, t_philo *philo);
 long	live_time(long start);
-int		create_thread(t_philo *philo);
 void	*one_philo(void *arg);
 void	*routine(void *arg);
 void	*monitor_death(void *arg);
+void	cleanup(t_data *data, t_philo *philo);
+void	smart_sleep(long duration, t_data *data);
+long	live_time(long start);
+void	print_msg(t_philo *philo, char *msg);
 
 #endif

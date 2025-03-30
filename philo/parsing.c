@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 01:14:37 by hbousset          #+#    #+#             */
-/*   Updated: 2025/03/29 02:01:57 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/03/30 06:52:56 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,24 +67,84 @@ static int	init_variables(int ac, char **av, t_data *data)
 	return (0);
 }
 
-int	create_thread(t_philo *philo)
-{
-	pthread_t	monitor;
-
-	if (pthread_create(&monitor, NULL, monitor_death, philo) != 0)
-		return (1);
-	pthread_join(monitor, NULL);
-	return (0);
-}
-
-int	parsing(int ac, char **av, t_data *data)
+int	init_data(t_data *data, int ac, char **av)
 {
 	int	i;
 
-	i = 0;
-	if (ac != 5 && ac != 6)
-		return (printf("Error: Invalid number of arguments!\n"), 1);
 	if (init_variables(ac, av, data))
+		return (free(data), 1);
+	pthread_mutex_init(&data->end_mutex, NULL);
+	pthread_mutex_init(&data->write_lock, NULL);
+	data->forks = malloc(sizeof(pthread_mutex_t) * data->philo);
+	if (!data->forks)
+	{
+		free(data);
+		return (printf("Error: malloc failed for forks\n"), 1);
+	}
+	i = 0;
+	while (i < data->philo)
+	{
+		if (pthread_mutex_init(&data->forks[i], NULL) != 0)
+		{
+			free(data);
+			free(data->forks);
+			return (printf("Error: mutex init failed\n"), 1);
+		}
+		i++;
+	}
+	return (0);
+}
+
+static int	create_philos(t_data *data, t_philo *philo)
+{
+	pthread_t	monitor;
+	int			i;
+
+	i = 0;
+	while (i < data->philo)
+	{
+		if (pthread_mutex_init(&philo[i].meal_mutex, NULL) != 0)
+			return (printf("Error: meal_mutex init failed\n"), 1);
+		philo[i].id = i;
+		philo[i].meals_eaten = 0;
+		philo[i].data = data;
+		philo[i].last_meal = data->t_start;
+		if (pthread_create(&philo[i].thread, NULL, routine, &philo[i]))
+			return (printf("Error: thread creation failed\n"), 1);
+		i++;
+	}
+	if (pthread_create(&monitor, NULL, monitor_death, philo) != 0)
 		return (1);
+	pthread_join(monitor, NULL);
+	while (--i >= 0)
+		pthread_join(philo[i].thread, NULL);
+	return (0);
+}
+
+int	create_philo(t_data *data, t_philo *philo)
+{
+	if (data->philo == 1)
+	{
+		if (pthread_mutex_init(&philo[0].meal_mutex, NULL) != 0)
+			return (printf("Error: meal_mutex init failed\n"), 1);
+		philo[0].id = 0;
+		philo[0].meals_eaten = 0;
+		philo[0].data = data;
+		philo[0].last_meal = live_time(data->t_start);
+		if (pthread_create(&philo[0].thread, NULL, one_philo, &philo[0]))
+		{
+			cleanup(data, philo);
+			return (printf("Error: thread creation failed\n"), 1);
+		}
+		pthread_join(philo[0].thread, NULL);
+	}
+	else
+	{
+		if (create_philos(data, philo))
+		{
+			cleanup(data, philo);
+			return (1);
+		}
+	}
 	return (0);
 }

@@ -2,7 +2,7 @@ NAME	= philo
 CC		= cc
 CFLAGS	= -Wall -Wextra -Werror
 
-SRCS	=	main.c parsing.c routine.c \
+SRCS	=	main.c parsing.c routine.c monitor.c tools.c\
 
 OBJS	= $(SRCS:.c=.o)
 
