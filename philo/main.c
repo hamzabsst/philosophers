@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 02:37:59 by hbousset          #+#    #+#             */
-/*   Updated: 2025/03/30 07:12:54 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/03/30 08:44:55 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,5 +33,6 @@ int	main(int ac, char **av)
 	}
 	if (create_philo(data, philo))
 		return (1);
+	cleanup(data, philo);
 	return (0);
 }
