@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 12:41:26 by hbousset          #+#    #+#             */
-/*   Updated: 2025/03/30 08:10:42 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/03/30 08:40:05 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ typedef struct s_monitor
 
 int		init_data(t_data *data, int ac, char **av);
 int		create_philo(t_data *data, t_philo *philo);
-long	live_time(long start);
 void	*one_philo(void *arg);
 void	*routine(void *arg);
 void	*monitor_death(void *arg);

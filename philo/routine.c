@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 21:07:13 by hbousset          #+#    #+#             */
-/*   Updated: 2025/03/30 08:17:13 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/03/30 08:38:39 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static int	take_forks_odd(t_philo *philo, int left_fork, int right_fork)
 	return (1);
 }
 
-void	philo_eating(t_philo *philo)
+static void	philo_eating(t_philo *philo)
 {
 	t_data	*data;
 	int		right_fork;

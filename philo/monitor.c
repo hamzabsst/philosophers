@@ -6,13 +6,13 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 06:27:39 by hbousset          #+#    #+#             */
-/*   Updated: 2025/03/30 06:48:59 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/03/30 08:39:16 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	handle_death(t_philo *philo, t_data *data, long current_t, int i)
+static void	handle_death(t_philo *philo, t_data *data, long current_t, int i)
 {
 	pthread_mutex_lock(&data->end_mutex);
 	data->end = 1;
@@ -23,7 +23,7 @@ void	handle_death(t_philo *philo, t_data *data, long current_t, int i)
 	pthread_mutex_unlock(&philo->meal_mutex);
 }
 
-void	update_monitor(t_monitor *mon)
+static void	update_monitor(t_monitor *mon)
 {
 	mon->current_t = live_time(mon->data->t_start);
 	mon->all_done = 1;
@@ -31,7 +31,7 @@ void	update_monitor(t_monitor *mon)
 	mon->i = 0;
 }
 
-int	check_philosopher(t_monitor *mon)
+static int	check_philosopher(t_monitor *mon)
 {
 	pthread_mutex_lock(&mon->philos[mon->i].meal_mutex);
 	mon->t_since_meal = mon->current_t - mon->philos[mon->i].last_meal;
@@ -51,7 +51,7 @@ int	check_philosopher(t_monitor *mon)
 	return (0);
 }
 
-void	handle_simulation_end(t_monitor *mon)
+static void	handle_simulation_end(t_monitor *mon)
 {
 	pthread_mutex_lock(&mon->data->end_mutex);
 	mon->data->end = 1;
