@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 21:07:13 by hbousset          #+#    #+#             */
-/*   Updated: 2025/04/01 10:11:25 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/04/01 11:47:02 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,25 +23,8 @@ void	*one_philo(void *arg)
 	return (NULL);
 }
 
-static void	select_forks(t_philo *philo, int *first, int *second)
-{
-	if (philo->id < (philo->id + 1) % philo->data->philo)
-	{
-		*first = philo->id;
-		*second = (philo->id + 1) % philo->data->philo;
-	}
-	else
-	{
-		*first = (philo->id + 1) % philo->data->philo;
-		*second = philo->id;
-	}
-}
-
 static int	philo_eat(t_philo *philo)
 {
-	int	first;
-	int	second;
-
 	pthread_mutex_lock(&philo->data->end_mutex);
 	if (philo->data->end)
 	{
@@ -49,10 +32,9 @@ static int	philo_eat(t_philo *philo)
 		return (1);
 	}
 	pthread_mutex_unlock(&philo->data->end_mutex);
-	select_forks(philo, &first, &second);
-	pthread_mutex_lock(&philo->data->forks[first]);
+	pthread_mutex_lock(philo->left);
 	print_msg(philo, FORK);
-	pthread_mutex_lock(&philo->data->forks[second]);
+	pthread_mutex_lock(philo->right);
 	print_msg(philo, FORK);
 	print_msg(philo, EAT);
 	pthread_mutex_lock(&philo->meal_mutex);
@@ -60,8 +42,8 @@ static int	philo_eat(t_philo *philo)
 	philo->meals_eaten++;
 	pthread_mutex_unlock(&philo->meal_mutex);
 	smart_sleep(philo->data->t_eat, philo->data);
-	pthread_mutex_unlock(&philo->data->forks[first]);
-	pthread_mutex_unlock(&philo->data->forks[second]);
+	pthread_mutex_unlock(philo->left);
+	pthread_mutex_unlock(philo->right);
 	return (0);
 }
 
@@ -82,17 +64,12 @@ void	*routine(void *arg)
 	while (1)
 	{
 		print_msg(philo, THINK);
+/* 		if (philo->data->philo % 2)
+			usleep(1000); */
 		if (philo_eat(philo))
 			break ;
 		if (philo_sleep(philo))
 			break ;
-		pthread_mutex_lock(&philo->data->end_mutex);
-		if (philo->data->end)
-		{
-			pthread_mutex_unlock(&philo->data->end_mutex);
-			break ;
-		}
-		pthread_mutex_unlock(&philo->data->end_mutex);
 	}
 	return (NULL);
 }

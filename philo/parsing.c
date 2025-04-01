@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 01:14:37 by hbousset          #+#    #+#             */
-/*   Updated: 2025/04/01 10:07:03 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/04/01 11:49:23 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,8 @@ static int	create_philos(t_data *data, t_philo *philo)
 		philo[i].meals_eaten = 0;
 		philo[i].data = data;
 		philo[i].last_meal = data->t_start;
+		philo[i].left = &philo->data->forks[i];
+		philo[i].right = &philo->data->forks[(i + 1) % philo->data->philo];
 		if (pthread_create(&philo[i].thread, NULL, routine, &philo[i]))
 			return (printf("Error: thread creation failed\n"), 1);
 		i++;

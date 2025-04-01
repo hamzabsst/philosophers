@@ -6,13 +6,13 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 06:27:39 by hbousset          #+#    #+#             */
-/*   Updated: 2025/04/01 10:11:49 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/04/01 11:50:31 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int	monitore_eating(t_philo *philo)
+static int	eating(t_philo *philo)
 {
 	int		i;
 	int		meals;
@@ -34,7 +34,7 @@ static int	monitore_eating(t_philo *philo)
 	return (0);
 }
 
-static void	monitore_death(t_philo *philo, int i)
+static void	death(t_philo *philo, int i)
 {
 	long	curr_time;
 
@@ -61,7 +61,7 @@ void	monitoring(t_philo *philo)
 		i = -1;
 		while (++i < philo->data->philo)
 		{
-			monitore_death(philo, i);
+			death(philo, i);
 			pthread_mutex_lock(&philo->data->end_mutex);
 			if (philo->data->end == 1)
 			{
@@ -70,7 +70,7 @@ void	monitoring(t_philo *philo)
 			}
 			pthread_mutex_unlock(&philo->data->end_mutex);
 		}
-		if (philo->data->n_eat > 0 && monitore_eating(philo))
+		if (philo->data->n_eat > 0 && eating(philo))
 		{
 			pthread_mutex_lock(&philo->data->end_mutex);
 			philo->data->end = 1;
