@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 01:14:37 by hbousset          #+#    #+#             */
-/*   Updated: 2025/04/01 11:49:23 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/04/01 15:36:37 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,66 +84,44 @@ int	init_data(t_data *data, int ac, char **av)
 	i = 0;
 	while (i < data->philo)
 	{
-		if (pthread_mutex_init(&data->forks[i], NULL) != 0)
-		{
-			free(data);
-			free(data->forks);
-			return (printf("Error: mutex init failed\n"), 1);
-		}
+		pthread_mutex_init(&data->forks[i], NULL);
 		i++;
 	}
 	return (0);
 }
 
-static int	create_philos(t_data *data, t_philo *philo)
+static void	init_philo(t_data *data, t_philo *philo, int i)
+{
+	pthread_mutex_init(&philo[i].meal_mutex, NULL);
+	philo[i].id = i + 1;
+	philo[i].meals_eaten = 0;
+	philo[i].data = data;
+	philo[i].last_meal = data->t_start;
+	if (i == data->philo - 1)
+	{
+		philo[i].left = &data->forks[i];
+		philo[i].right = &data->forks[0];
+	}
+	else
+	{
+		philo[i].right = &data->forks[i];
+		philo[i].left = &data->forks[(i + 1) % data->philo];
+	}
+}
+
+void	create_philo(t_data *data, t_philo *philo)
 {
 	int	i;
 
 	i = 0;
 	while (i < data->philo)
 	{
-		if (pthread_mutex_init(&philo[i].meal_mutex, NULL) != 0)
-			return (printf("Error: meal_mutex init failed\n"), 1);
-		philo[i].id = i;
-		philo[i].meals_eaten = 0;
-		philo[i].data = data;
-		philo[i].last_meal = data->t_start;
-		philo[i].left = &philo->data->forks[i];
-		philo[i].right = &philo->data->forks[(i + 1) % philo->data->philo];
-		if (pthread_create(&philo[i].thread, NULL, routine, &philo[i]))
-			return (printf("Error: thread creation failed\n"), 1);
+		init_philo(data, philo, i);
+		pthread_create(&philo[i].thread, NULL, routine, &philo[i]);
 		i++;
 	}
-	monitoring(philo);
+	if (data->philo > 1)
+		monitoring(philo);
 	while (--i >= 0)
 		pthread_join(philo[i].thread, NULL);
-	return (0);
-}
-
-int	create_philo(t_data *data, t_philo *philo)
-{
-	if (data->philo == 1)
-	{
-		if (pthread_mutex_init(&philo[0].meal_mutex, NULL) != 0)
-			return (printf("Error: meal_mutex init failed\n"), 1);
-		philo[0].id = 0;
-		philo[0].meals_eaten = 0;
-		philo[0].data = data;
-		philo[0].last_meal = live_time(data->t_start);
-		if (pthread_create(&philo[0].thread, NULL, one_philo, &philo[0]))
-		{
-			cleanup(data, philo);
-			return (printf("Error: thread creation failed\n"), 1);
-		}
-		pthread_join(philo[0].thread, NULL);
-	}
-	else
-	{
-		if (create_philos(data, philo))
-		{
-			cleanup(data, philo);
-			return (1);
-		}
-	}
-	return (0);
 }

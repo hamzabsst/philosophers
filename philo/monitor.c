@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 06:27:39 by hbousset          #+#    #+#             */
-/*   Updated: 2025/04/01 11:50:31 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/04/01 15:44:14 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,21 @@
 static int	eating(t_philo *philo)
 {
 	int		i;
-	int		meals;
+	int		done_eating;
 	t_data	*data;
 
 	i = 0;
-	meals = 0;
+	done_eating = 0;
 	data = philo->data;
 	while (i < data->philo)
 	{
 		pthread_mutex_lock(&philo[i].meal_mutex);
 		if (philo[i].meals_eaten >= data->n_eat && data->n_eat > 0)
-			meals++;
+			done_eating++;
 		pthread_mutex_unlock(&philo[i].meal_mutex);
 		i++;
 	}
-	if (meals == data->philo)
+	if (done_eating == data->philo)
 		return (1);
 	return (0);
 }
