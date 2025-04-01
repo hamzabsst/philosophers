@@ -6,13 +6,13 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 06:27:39 by hbousset          #+#    #+#             */
-/*   Updated: 2025/04/01 09:56:03 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/04/01 10:11:49 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	monitore_eating(t_philo *philo)
+static int	monitore_eating(t_philo *philo)
 {
 	int		i;
 	int		meals;
@@ -34,7 +34,7 @@ int	monitore_eating(t_philo *philo)
 	return (0);
 }
 
-void	monitore_death(t_philo *philo, int i)
+static void	monitore_death(t_philo *philo, int i)
 {
 	long	curr_time;
 

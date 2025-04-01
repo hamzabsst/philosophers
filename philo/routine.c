@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 21:07:13 by hbousset          #+#    #+#             */
-/*   Updated: 2025/04/01 09:58:41 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/04/01 10:11:25 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static void	select_forks(t_philo *philo, int *first, int *second)
 	}
 }
 
-int	philo_eat(t_philo *philo)
+static int	philo_eat(t_philo *philo)
 {
 	int	first;
 	int	second;
@@ -65,7 +65,7 @@ int	philo_eat(t_philo *philo)
 	return (0);
 }
 
-int	philo_sleep(t_philo *philo)
+static int	philo_sleep(t_philo *philo)
 {
 	print_msg(philo, SLEEP);
 	smart_sleep(philo->data->t_sleep, philo->data);
