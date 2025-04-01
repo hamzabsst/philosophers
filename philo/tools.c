@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 06:34:59 by hbousset          #+#    #+#             */
-/*   Updated: 2025/03/30 06:37:07 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/04/01 10:02:25 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	print_msg(t_philo *philo, char *msg)
 	if (!philo->data->end)
 	{
 		pthread_mutex_lock(&philo->data->write_lock);
-		printf("%ld ms: [%d] %s",
+		printf("%ld\t%d\t%s",
 			live_time(philo->data->t_start), philo->id + 1, msg);
 		pthread_mutex_unlock(&philo->data->write_lock);
 	}

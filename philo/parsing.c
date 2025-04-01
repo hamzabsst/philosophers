@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 01:14:37 by hbousset          #+#    #+#             */
-/*   Updated: 2025/03/30 08:47:32 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/04/01 10:07:03 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,8 +97,7 @@ int	init_data(t_data *data, int ac, char **av)
 
 static int	create_philos(t_data *data, t_philo *philo)
 {
-	pthread_t	monitor;
-	int			i;
+	int	i;
 
 	i = 0;
 	while (i < data->philo)
@@ -113,9 +112,7 @@ static int	create_philos(t_data *data, t_philo *philo)
 			return (printf("Error: thread creation failed\n"), 1);
 		i++;
 	}
-	if (pthread_create(&monitor, NULL, monitor_death, philo) != 0)
-		return (1);
-	pthread_join(monitor, NULL);
+	monitoring(philo);
 	while (--i >= 0)
 		pthread_join(philo[i].thread, NULL);
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 12:41:26 by hbousset          #+#    #+#             */
-/*   Updated: 2025/03/30 08:40:05 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/04/01 10:03:43 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,11 @@
 # include <pthread.h>
 # include <limits.h>
 
-# define DEAD  "is dead 💀\n"
-# define EAT  "is eating 🍽️\n"
-# define SLEEP  "is sleeping 😴\n"
-# define R_FORK  "has taken the right fork 🍴\n"
-# define L_FORK  "has taken the left fork 🍴\n"
-# define THINK  "is thinking 🤔\n"
-# define FINISH  "simulation is finished ✅\n"
+# define FORK  "has taken a fork\n"
+# define EAT  "is eating\n"
+# define SLEEP  "is sleeping\n"
+# define THINK  "is thinking\n"
+# define DEAD  "died\n"
 
 typedef struct s_data
 {
@@ -52,22 +50,11 @@ typedef struct s_philo
 	t_data			*data;
 }	t_philo;
 
-typedef struct s_monitor
-{
-	t_philo	*philos;
-	t_data	*data;
-	long	current_t;
-	long	t_since_meal;
-	long	min_t_remain;
-	int		i;
-	int		all_done;
-}	t_monitor;
-
 int		init_data(t_data *data, int ac, char **av);
 int		create_philo(t_data *data, t_philo *philo);
 void	*one_philo(void *arg);
 void	*routine(void *arg);
-void	*monitor_death(void *arg);
+void		monitoring(t_philo *philo);
 void	cleanup(t_data *data, t_philo *philo);
 void	smart_sleep(long duration, t_data *data);
 long	live_time(long start);
