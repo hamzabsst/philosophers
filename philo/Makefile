@@ -7,7 +7,6 @@ SRCS	=	main.c parsing.c routine.c monitor.c tools.c\
 OBJS	= $(SRCS:.c=.o)
 
 all: $(NAME)
-	@echo "Build complete!"
 
 %.o: %.c philo.h
 	@$(CC) $(CFLAGS) -c $< -o $@

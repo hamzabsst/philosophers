@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 12:41:26 by hbousset          #+#    #+#             */
-/*   Updated: 2025/04/01 10:03:43 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/04/01 10:09:12 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int		init_data(t_data *data, int ac, char **av);
 int		create_philo(t_data *data, t_philo *philo);
 void	*one_philo(void *arg);
 void	*routine(void *arg);
-void		monitoring(t_philo *philo);
+void	monitoring(t_philo *philo);
 void	cleanup(t_data *data, t_philo *philo);
 void	smart_sleep(long duration, t_data *data);
 long	live_time(long start);
