@@ -6,13 +6,13 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 01:14:37 by hbousset          #+#    #+#             */
-/*   Updated: 2025/04/01 15:36:37 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/04/03 08:40:20 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int	ft_atol(const char *str, int *result)
+static int	ft_atoi(const char *str, int *result)
 {
 	long	nbr;
 	int		i;
@@ -42,21 +42,21 @@ static int	init_variables(int ac, char **av, t_data *data)
 {
 	int	temp;
 
-	if (ft_atol(av[1], &temp) || temp <= 0)
+	if (ft_atoi(av[1], &temp) || temp <= 0)
 		return (printf("Error: Invalid number of philosophers\n"), 1);
 	data->philo = temp;
-	if (ft_atol(av[2], &temp) || temp <= 0)
+	if (ft_atoi(av[2], &temp) || temp <= 0)
 		return (printf("Error: Invalid time_to_die\n"), 1);
 	data->t_die = temp;
-	if (ft_atol(av[3], &temp) || temp <= 0)
+	if (ft_atoi(av[3], &temp) || temp <= 0)
 		return (printf("Error: Invalid time_to_eat\n"), 1);
 	data->t_eat = temp;
-	if (ft_atol(av[4], &temp) || temp <= 0)
+	if (ft_atoi(av[4], &temp) || temp <= 0)
 		return (printf("Error: Invalid time_to_sleep\n"), 1);
 	data->t_sleep = temp;
 	if (ac == 6)
 	{
-		if (ft_atol(av[5], &temp) || temp <= 0)
+		if (ft_atoi(av[5], &temp) || temp <= 0)
 			return (printf("Error: Invalid times_each_philos_must_eat\n"), 1);
 		data->n_eat = temp;
 	}
