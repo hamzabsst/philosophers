@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 06:27:39 by hbousset          #+#    #+#             */
-/*   Updated: 2025/04/01 15:44:14 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/04/03 11:02:29 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,5 @@ void	monitoring(t_philo *philo)
 			pthread_mutex_unlock(&philo->data->end_mutex);
 			return ;
 		}
-		usleep(1000);
 	}
 }

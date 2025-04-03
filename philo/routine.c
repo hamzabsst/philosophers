@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 21:07:13 by hbousset          #+#    #+#             */
-/*   Updated: 2025/04/01 15:53:44 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/04/03 11:30:14 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,24 +32,6 @@ long	live_time(long start)
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000) - start);
 }
 
-static void	smart_sleep(long duration, t_data *data)
-{
-	long	start;
-
-	start = live_time(data->t_start);
-	while (live_time(data->t_start) - start < duration)
-	{
-		usleep(50);
-		pthread_mutex_lock(&data->end_mutex);
-		if (data->end)
-		{
-			pthread_mutex_unlock(&data->end_mutex);
-			break ;
-		}
-		pthread_mutex_unlock(&data->end_mutex);
-	}
-}
-
 static int	philo_eat(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->data->end_mutex);
@@ -68,7 +50,7 @@ static int	philo_eat(t_philo *philo)
 	philo->last_meal = live_time(philo->data->t_start);
 	philo->meals_eaten++;
 	pthread_mutex_unlock(&philo->meal_mutex);
-	smart_sleep(philo->data->t_eat, philo->data);
+	usleep(philo->data->t_eat * 1000);
 	pthread_mutex_unlock(philo->right);
 	pthread_mutex_unlock(philo->left);
 	return (0);
@@ -91,10 +73,12 @@ void	*routine(void *arg)
 	while (1)
 	{
 		print_msg(philo, THINK);
+		if (philo->data->philo % 2)
+			usleep(1000);
 		if (philo_eat(philo))
 			break ;
 		print_msg(philo, SLEEP);
-		smart_sleep(philo->data->t_sleep, philo->data);
+		usleep(philo->data->t_sleep * 1000);
 	}
 	return (NULL);
 }
