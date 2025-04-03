@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 01:14:37 by hbousset          #+#    #+#             */
-/*   Updated: 2025/04/03 11:24:05 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/04/03 11:44:45 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,17 +90,6 @@ int	init_data(t_data *data, int ac, char **av)
 	return (0);
 }
 
-static void	init_philo(t_data *data, t_philo *philo, int i)
-{
-	pthread_mutex_init(&philo[i].meal_mutex, NULL);
-	philo[i].id = i + 1;
-	philo[i].meals_eaten = 0;
-	philo[i].data = data;
-	philo[i].last_meal = data->t_start;
-	philo[i].right = &data->forks[i];
-	philo[i].left = &data->forks[(i + 1) % data->philo];
-}
-
 void	create_philo(t_data *data, t_philo *philo)
 {
 	int	i;
@@ -108,7 +97,13 @@ void	create_philo(t_data *data, t_philo *philo)
 	i = 0;
 	while (i < data->philo)
 	{
-		init_philo(data, philo, i);
+		pthread_mutex_init(&philo[i].meal_mutex, NULL);
+		philo[i].id = i + 1;
+		philo[i].meals_eaten = 0;
+		philo[i].data = data;
+		philo[i].last_meal = data->t_start;
+		philo[i].right = &data->forks[i];
+		philo[i].left = &data->forks[(i + 1) % data->philo];
 		pthread_create(&philo[i].thread, NULL, routine, &philo[i]);
 		i++;
 	}
