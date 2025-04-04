@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 06:27:39 by hbousset          #+#    #+#             */
-/*   Updated: 2025/04/03 11:47:08 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/04/04 08:04:44 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,8 @@ void	monitoring(t_philo *philo)
 
 	while (1)
 	{
-		i = -1;
-		while (++i < philo->data->philo)
+		i = 0;
+		while (i < philo->data->philo)
 		{
 			monitor_death(philo, i);
 			pthread_mutex_lock(&philo->data->end_mutex);
@@ -69,6 +69,7 @@ void	monitoring(t_philo *philo)
 				return ;
 			}
 			pthread_mutex_unlock(&philo->data->end_mutex);
+			i++;
 		}
 		if (philo->data->n_eat > 0 && monitor_meals(philo))
 		{
