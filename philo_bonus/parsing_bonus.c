@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 07:57:21 by hbousset          #+#    #+#             */
-/*   Updated: 2025/04/03 07:59:14 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/04/04 07:57:37 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,22 +70,22 @@ int	init_data(t_data *data, int ac, char **av)
 {
 	if (init_variables(ac, av, data))
 		return (1);
-	sem_unlink("/forks");
-	sem_unlink("/write");
-	sem_unlink("/death");
-	sem_unlink("/limit");
+	sem_unlinking();
 	data->forks = sem_open("/forks", O_CREAT, 0644, data->philo);
 	data->write = sem_open("/write", O_CREAT, 0644, 1);
 	data->death = sem_open("/death", O_CREAT, 0644, 0);
 	data->eat_limit = sem_open("/limit", O_CREAT, 0644, 0);
+	data->meal_mutex = sem_open("/meal_mutex", O_CREAT, 0644, 1);
 	if (data->forks == SEM_FAILED || data->write == SEM_FAILED
-		|| data->death == SEM_FAILED || data->eat_limit == SEM_FAILED)
+		|| data->death == SEM_FAILED || data->eat_limit == SEM_FAILED
+		|| data->meal_mutex == SEM_FAILED)
 		return (printf("Error: sem_open failed\n"), 1);
 	return (0);
 }
 
 void	create(t_philo *philo)
 {
+	philo->last_meal = live_time(philo->data->t_start);
 	pthread_create(&philo->thread, NULL, &routine, philo);
 	monitoring(philo);
 	pthread_join(philo->thread, NULL);
@@ -98,26 +98,32 @@ void	create_philos(t_data *data, t_philo *philo)
 
 	i = 0;
 	philo->data = data;
-	philo->meals_eaten = 0;
 	while (i < data->philo)
 	{
 		philo->pids[i] = fork();
-		if (philo->pids[i] == 0)
+		if (philo->pids[i] < 0)
+		{
+			while (--i >= 0)
+				kill(philo->pids[i], SIGKILL);
+			printf("Error: fork failed\n");
+			return;
+		}
+		else if (philo->pids[i] == 0)
 		{
 			philo->id = i + 1;
+			philo->meals_eaten = 0;
 			philo->last_meal = live_time(data->t_start);
 			create(philo);
 			exit(0);
 		}
 		i++;
 	}
-	if (philo->data->philo == 1)
+	if (data->philo == 1)
 	{
 		waitpid(philo->pids[0], NULL, 0);
-		return ;
+		return;
 	}
 	pthread_create(&philo->thread, NULL, &second_monitor, philo);
 	monitore(philo);
 	pthread_join(philo->thread, NULL);
-	return ;
 }

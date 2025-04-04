@@ -6,11 +6,20 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 07:56:29 by hbousset          #+#    #+#             */
-/*   Updated: 2025/04/03 07:58:33 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/04/04 07:56:11 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
+
+void	sem_unlinking(void)
+{
+	sem_unlink("/forks");
+	sem_unlink("/write");
+	sem_unlink("/death");
+	sem_unlink("/limit");
+	sem_unlink("/meal_mutex");
+}
 
 void	cleanup(t_data *data, t_philo *philo)
 {
@@ -18,10 +27,8 @@ void	cleanup(t_data *data, t_philo *philo)
 	sem_close(data->write);
 	sem_close(data->death);
 	sem_close(data->eat_limit);
-	sem_unlink("/forks");
-	sem_unlink("/write");
-	sem_unlink("/death");
-	sem_unlink("/limit");
+	sem_close(data->meal_mutex);
+	sem_unlinking();
 	if (philo)
 	{
 		if (philo->pids)

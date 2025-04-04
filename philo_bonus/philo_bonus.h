@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 12:41:26 by hbousset          #+#    #+#             */
-/*   Updated: 2025/04/03 07:54:51 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/04/04 07:57:09 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ typedef struct s_data
 	sem_t	*write;
 	sem_t	*death;
 	sem_t	*eat_limit;
+	sem_t	*meal_mutex;
 }	t_data;
 
 typedef struct s_philo
@@ -63,6 +64,7 @@ void	monitore(t_philo *philo);
 void	*routine(void *arg);
 long	live_time(long start);
 void	cleanup(t_data *data, t_philo *philo);
-void	print_msg(t_philo *philo, char *msg);
+void	print_msg(t_philo *philo, char *msg, int release_sem);
+void	sem_unlinking(void);
 
 #endif
