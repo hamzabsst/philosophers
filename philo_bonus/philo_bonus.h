@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 12:41:26 by hbousset          #+#    #+#             */
-/*   Updated: 2025/04/04 10:10:58 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/04/04 11:36:46 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,8 @@ void	*monitor_meals(void *arg);
 void	monitor_cleanup(t_philo *philo);
 void	*routine(void *arg);
 long	live_time(long start);
-void	cleanup(t_data *data, t_philo *philo);
 void	print_msg(t_philo *philo, char *msg);
+void	cleanup(t_data *data, t_philo *philo);
 void	sem_unlinking(void);
 void	sem_closing(t_data *data);
 
