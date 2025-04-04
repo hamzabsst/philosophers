@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 07:56:29 by hbousset          #+#    #+#             */
-/*   Updated: 2025/04/04 07:56:11 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/04/04 10:56:21 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,21 @@ void	sem_unlinking(void)
 	sem_unlink("/write");
 	sem_unlink("/death");
 	sem_unlink("/limit");
-	sem_unlink("/meal_mutex");
+	sem_unlink("/queue");
 }
 
-void	cleanup(t_data *data, t_philo *philo)
+void	sem_closing(t_data *data)
 {
 	sem_close(data->forks);
 	sem_close(data->write);
 	sem_close(data->death);
 	sem_close(data->eat_limit);
-	sem_close(data->meal_mutex);
+	sem_close(data->queue);
+}
+
+void	cleanup(t_data *data, t_philo *philo)
+{
+	sem_closing(data);
 	sem_unlinking();
 	if (philo)
 	{
@@ -51,13 +56,13 @@ int	main(int ac, char **av)
 		return (printf("Error: malloc failed\n"), 1);
 	if (init_data(data, ac, av))
 		return (free(data), 1);
-	philo = malloc(sizeof(t_philo) * data->philo);
+	philo = malloc(sizeof(t_philo) * data->n_philo);
 	if (!philo)
 	{
 		cleanup(data, philo);
 		return (printf("Error: malloc failed for philo\n"), 1);
 	}
-	philo->pids = malloc(sizeof(pid_t) * data->philo);
+	philo->pids = malloc(sizeof(pid_t) * data->n_philo);
 	if (!philo->pids)
 	{
 		cleanup(data, philo);

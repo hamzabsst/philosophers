@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/03 07:57:21 by hbousset          #+#    #+#             */
-/*   Updated: 2025/04/04 07:57:37 by hbousset         ###   ########.fr       */
+/*   Created: 2025/04/04 10:09:23 by hbousset          #+#    #+#             */
+/*   Updated: 2025/04/04 11:02:08 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static int	init_variables(int ac, char **av, t_data *data)
 
 	if (ft_atoi(av[1], &temp) || temp <= 0)
 		return (printf("Error: Invalid number of philosophers\n"), 1);
-	data->philo = temp;
+	data->n_philo = temp;
 	if (ft_atoi(av[2], &temp) || temp <= 0)
 		return (printf("Error: Invalid time_to_die\n"), 1);
 	data->t_die = temp;
@@ -71,59 +71,70 @@ int	init_data(t_data *data, int ac, char **av)
 	if (init_variables(ac, av, data))
 		return (1);
 	sem_unlinking();
-	data->forks = sem_open("/forks", O_CREAT, 0644, data->philo);
+	data->forks = sem_open("/forks", O_CREAT, 0644, data->n_philo);
 	data->write = sem_open("/write", O_CREAT, 0644, 1);
 	data->death = sem_open("/death", O_CREAT, 0644, 0);
 	data->eat_limit = sem_open("/limit", O_CREAT, 0644, 0);
-	data->meal_mutex = sem_open("/meal_mutex", O_CREAT, 0644, 1);
+	data->queue = sem_open("/queue", O_CREAT, 0644, data->n_philo / 2);
 	if (data->forks == SEM_FAILED || data->write == SEM_FAILED
 		|| data->death == SEM_FAILED || data->eat_limit == SEM_FAILED
-		|| data->meal_mutex == SEM_FAILED)
+		|| data->queue == SEM_FAILED)
 		return (printf("Error: sem_open failed\n"), 1);
 	return (0);
 }
 
-void	create(t_philo *philo)
+static void	spawn_philos(t_data *data, t_philo *philo)
 {
-	philo->last_meal = live_time(philo->data->t_start);
-	pthread_create(&philo->thread, NULL, &routine, philo);
-	monitoring(philo);
-	pthread_join(philo->thread, NULL);
-	return ;
+	int	i;
+
+	i = -1;
+	philo->data->t_start = live_time(0);
+	while (++i < data->n_philo)
+	{
+		philo->pids[i] = fork();
+		if (philo->pids[i] == 0)
+		{
+			philo->id = i + 1;
+			philo->data->t_start = philo->data->t_start;
+			philo->last_meal = live_time(philo->data->t_start);
+			if (philo->data->n_philo == 1)
+			{
+				routine(philo);
+				cleanup(philo->data, philo);
+				exit(0);
+			}
+			pthread_create(&philo->thread, NULL, &routine, philo);
+			monitor(philo);
+			pthread_join(philo->thread, NULL);
+			sem_closing(philo->data);
+			exit(0);
+		}
+	}
 }
 
 void	create_philos(t_data *data, t_philo *philo)
 {
 	int	i;
 
-	i = 0;
 	philo->data = data;
-	while (i < data->philo)
-	{
-		philo->pids[i] = fork();
-		if (philo->pids[i] < 0)
-		{
-			while (--i >= 0)
-				kill(philo->pids[i], SIGKILL);
-			printf("Error: fork failed\n");
-			return;
-		}
-		else if (philo->pids[i] == 0)
-		{
-			philo->id = i + 1;
-			philo->meals_eaten = 0;
-			philo->last_meal = live_time(data->t_start);
-			create(philo);
-			exit(0);
-		}
-		i++;
-	}
-	if (data->philo == 1)
+	philo->meals_eaten = 0;
+	philo->thread = 0;
+	philo->id = 0;
+	philo->last_meal = 0;
+	philo->data->t_start = 0;
+	spawn_philos(data, philo);
+	if (data->n_philo == 1)
 	{
 		waitpid(philo->pids[0], NULL, 0);
-		return;
+		return ;
 	}
-	pthread_create(&philo->thread, NULL, &second_monitor, philo);
-	monitore(philo);
+	pthread_create(&philo->thread, NULL, &monitor_meals, philo);
+	monitor_cleanup(philo);
 	pthread_join(philo->thread, NULL);
+	i = 0;
+	while (i < data->n_philo)
+	{
+		waitpid(philo->pids[i], NULL, 0);
+		i++;
+	}
 }
