@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 01:14:37 by hbousset          #+#    #+#             */
-/*   Updated: 2025/04/03 11:44:45 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/04/04 09:48:37 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static int	init_variables(int ac, char **av, t_data *data)
 
 	if (ft_atoi(av[1], &temp) || temp <= 0)
 		return (printf("Error: Invalid number of philosophers\n"), 1);
-	data->philo = temp;
+	data->n_philo = temp;
 	if (ft_atoi(av[2], &temp) || temp <= 0)
 		return (printf("Error: Invalid time_to_die\n"), 1);
 	data->t_die = temp;
@@ -75,14 +75,14 @@ int	init_data(t_data *data, int ac, char **av)
 		return (free(data), 1);
 	pthread_mutex_init(&data->end_mutex, NULL);
 	pthread_mutex_init(&data->write_lock, NULL);
-	data->forks = malloc(sizeof(pthread_mutex_t) * data->philo);
+	data->forks = malloc(sizeof(pthread_mutex_t) * data->n_philo);
 	if (!data->forks)
 	{
 		free(data);
 		return (printf("Error: malloc failed for forks\n"), 1);
 	}
 	i = 0;
-	while (i < data->philo)
+	while (i < data->n_philo)
 	{
 		pthread_mutex_init(&data->forks[i], NULL);
 		i++;
@@ -95,7 +95,7 @@ void	create_philo(t_data *data, t_philo *philo)
 	int	i;
 
 	i = 0;
-	while (i < data->philo)
+	while (i < data->n_philo)
 	{
 		pthread_mutex_init(&philo[i].meal_mutex, NULL);
 		philo[i].id = i + 1;
@@ -103,12 +103,12 @@ void	create_philo(t_data *data, t_philo *philo)
 		philo[i].data = data;
 		philo[i].last_meal = data->t_start;
 		philo[i].right = &data->forks[i];
-		philo[i].left = &data->forks[(i + 1) % data->philo];
+		philo[i].left = &data->forks[(i + 1) % data->n_philo];
 		pthread_create(&philo[i].thread, NULL, routine, &philo[i]);
 		i++;
 	}
-	if (data->philo > 1)
-		monitoring(philo);
+	if (data->n_philo > 1)
+		monitor(philo);
 	while (--i >= 0)
 		pthread_join(philo[i].thread, NULL);
 }

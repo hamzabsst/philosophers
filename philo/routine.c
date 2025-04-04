@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 21:07:13 by hbousset          #+#    #+#             */
-/*   Updated: 2025/04/03 11:30:14 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/04/04 08:40:55 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	*routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	if (philo->data->philo == 1)
+	if (philo->data->n_philo == 1)
 	{
 		printf("%ld\t%d\t%s", live_time(philo->data->t_start), 1, FORK);
 		usleep(philo->data->t_die * 1000);
@@ -73,7 +73,7 @@ void	*routine(void *arg)
 	while (1)
 	{
 		print_msg(philo, THINK);
-		if (philo->data->philo % 2)
+		if (philo->data->n_philo % 2)
 			usleep(1000);
 		if (philo_eat(philo))
 			break ;

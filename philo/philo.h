@@ -6,7 +6,7 @@
 /*   By: hbousset <hbousset@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 12:41:26 by hbousset          #+#    #+#             */
-/*   Updated: 2025/04/01 15:44:28 by hbousset         ###   ########.fr       */
+/*   Updated: 2025/04/04 09:48:37 by hbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 
 typedef struct s_data
 {
-	int				philo;
+	int				n_philo;
 	int				t_die;
 	int				t_eat;
 	int				t_sleep;
@@ -55,7 +55,7 @@ typedef struct s_philo
 int		init_data(t_data *data, int ac, char **av);
 void	create_philo(t_data *data, t_philo *philo);
 void	*routine(void *arg);
-void	monitoring(t_philo *philo);
+void	monitor(t_philo *philo);
 long	live_time(long start);
 void	print_msg(t_philo *philo, char *msg);
 
